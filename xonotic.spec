@@ -50,6 +50,7 @@ Data files used to play Xonotic.
 
 %build
 cd source/darkplaces
+make clean
 %make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
 
 %install
