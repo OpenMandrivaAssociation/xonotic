@@ -68,9 +68,9 @@ cd source/darkplaces
 
 %__install -D -m 644 misc/logos/%{name}_icon.svg %{buildroot}%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
 
-%__install -d %{buildroot}%{_desktopdir}
+%__install -d %{buildroot}%{_datadir}/applications
 
-cat > %{buildroot}%{_desktopdir}/%{name}-sdl.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-SDL
 Comment=Multi-player first person shooter (SDL)
@@ -82,7 +82,7 @@ StartupNotify=false
 Categories=Game;ArcadeGame;
 EOF
 
-cat > %{buildroot}%{_desktopdir}/%{name}-glx.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/%{name}-glx.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-GLX
 Comment=Multi-player first person shooter (GLX)
@@ -101,8 +101,8 @@ EOF
 %defattr(-,root,root)
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
-%{_desktopdir}/%{name}-sdl.desktop
-%{_desktopdir}/%{name}-glx.desktop
+%{_datadir}/applications/%{name}-sdl.desktop
+%{_datadir}/applications/%{name}-glx.desktop
 %{_iconsdir}/hicolor/16x16/apps/%{name}.png
 %{_iconsdir}/hicolor/32x32/apps/%{name}.png
 %{_iconsdir}/hicolor/64x64/apps/%{name}.png
