@@ -3,7 +3,7 @@
 
 %define version 0.5.0
 
-%define release %mkrel 1
+%define release %mkrel 2
 
 Summary: A free multi-player first person shooter
 Name: %{name}
