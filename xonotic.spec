@@ -1,28 +1,22 @@
-%define name xonotic
-%define oname Xonotic
+%define		oname	Xonotic
 
-%define version 0.5.0
-
-%define release %mkrel 2
-
-Summary: A free multi-player first person shooter
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source0: %{name}-%{version}.zip
-License: GPLv2+
-Group: Games/Arcade
-Url: http://www.xonotic.org/
-Requires: %{name}-data = %{version}
-BuildRequires:  SDL-devel
-BuildRequires:  GL-devel
-BuildRequires:  libxxf86dga-devel
-BuildRequires:  libxext-devel
-BuildRequires:  libxpm-devel
-BuildRequires:  libxxf86vm-devel
-BuildRequires:  alsa-lib-devel
-BuildRequires:  jpeg-devel
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Summary:	A free multi-player first person shooter
+Name:		xonotic
+Version:	0.6.0
+Release:	%mkrel 1
+Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
+License:	GPLv2+
+Group:		Games/Arcade
+Url:		http://www.xonotic.org/
+Requires:	%{name}-data = %{version}
+BuildRequires:	SDL-devel
+BuildRequires:	mesagl-devel
+BuildRequires:	libxxf86dga-devel
+BuildRequires:	libxext-devel
+BuildRequires:	libxpm-devel
+BuildRequires:	libxxf86vm-devel
+BuildRequires:	alsa-lib-devel
+BuildRequires:	jpeg-devel
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -37,10 +31,10 @@ and structures itself to respect that. The aim of Xonotic is to become the
 best possible open-source FPS (first-person-shooter) of its kind.
 
 %package -n %{name}-data
-Summary: Xonotic data files (graphics, music, maps etc)
-Requires: %{name} = %{version}
-Group: Games/Arcade
-BuildArch: noarch
+Summary:	Xonotic data files (graphics, music, maps etc)
+Requires:	%{name} = %{version}
+Group:		Games/Arcade
+BuildArch:	noarch
 
 %description -n %{name}-data
 Data files used to play Xonotic.
@@ -50,8 +44,8 @@ Data files used to play Xonotic.
 
 %build
 cd source/darkplaces
-make clean
-make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
+%__make clean
+%__make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
 
 %install
 %__rm -rf %{buildroot}
@@ -71,7 +65,7 @@ make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{nam
 
 %__install -d %{buildroot}%{_datadir}/applications
 
-cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
+%__cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-SDL
 Comment=Multi-player first person shooter (SDL)
@@ -83,7 +77,7 @@ StartupNotify=false
 Categories=Game;ArcadeGame;
 EOF
 
-cat > %{buildroot}%{_datadir}/applications/%{name}-glx.desktop << EOF
+%__cat > %{buildroot}%{_datadir}/applications/%{name}-glx.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-GLX
 Comment=Multi-player first person shooter (GLX)
@@ -99,7 +93,6 @@ EOF
 %__rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
 %{_datadir}/applications/%{name}-sdl.desktop
@@ -110,9 +103,7 @@ EOF
 %{_iconsdir}/hicolor/128x128/apps/%{name}.png
 %{_iconsdir}/hicolor/scalable/apps/%{name}.svg
 
-
 %files -n %{name}-data
-%defattr(-,root,root)
 %dir %{_gamesdatadir}/%{name}/data
 %{_gamesdatadir}/%{name}/data/*
 
