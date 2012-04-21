@@ -3,20 +3,30 @@
 Summary:	A free multi-player first person shooter
 Name:		xonotic
 Version:	0.6.0
-Release:	%mkrel 1
-Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
+Release:	2
 License:	GPLv2+
 Group:		Games/Arcade
 Url:		http://www.xonotic.org/
+Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
+Patch0:		xonotic-0.6.0-makefile.inc.patch
 Requires:	%{name}-data = %{version}
+Requires:	d0_blind_id
 BuildRequires:	SDL-devel
 BuildRequires:	mesagl-devel
 BuildRequires:	libxxf86dga-devel
 BuildRequires:	libxext-devel
 BuildRequires:	libxpm-devel
 BuildRequires:	libxxf86vm-devel
+%if %mdvver >= 201200
+BuildRequires:	libasound-devel
+%else
 BuildRequires:	alsa-lib-devel
+%endif
 BuildRequires:	jpeg-devel
+BuildRequires:	libode-devel
+BuildRequires:	libmodplug-devel
+BuildRequires:	libvorbis-devel
+BuildRequires:	gmp-devel
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -41,14 +51,19 @@ Data files used to play Xonotic.
 
 %prep
 %setup -q -n %{oname}
+%patch0 -p0 -b .make
 
 %build
-cd source/darkplaces
-%__make clean
-%__make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
+%setup_compile_flags
+
+pushd  source/darkplaces
+
+make clean
+%make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} DP_LINK_TO_LIBJPEG=1
+
+popd
 
 %install
-%__rm -rf %{buildroot}
 
 %__install -d %{buildroot}%{_gamesdatadir}/%{name}
 %__cp -R data %{buildroot}%{_gamesdatadir}/%{name}/
@@ -89,9 +104,6 @@ StartupNotify=false
 Categories=Game;ArcadeGame;
 EOF
 
-%clean
-%__rm -rf %{buildroot}
-
 %files
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
@@ -106,4 +118,3 @@ EOF
 %files -n %{name}-data
 %dir %{_gamesdatadir}/%{name}/data
 %{_gamesdatadir}/%{name}/data/*
-
