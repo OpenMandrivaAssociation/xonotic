@@ -27,7 +27,7 @@ BuildRequires:	libode-devel
 BuildRequires:	libmodplug-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	gmp-devel
-BuildRequires:	libd0_blind-id-devel
+BuildRequires:	libd0_blind_id-devel
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -60,9 +60,9 @@ Data files used to play Xonotic.
 pushd  source/darkplaces
 
 make clean
-%make -j1 release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} DP_LINK_TO_LIBJPEG=1
+%make -j1 release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} UNIX_X11LIBPATH=%{_libdir} DP_LINK_TO_LIBJPEG=1
 
-gcc %{cflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lm %{ldflags}
+gcc %{cflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lgmp -lm %{ldflags}
 
 popd
 
