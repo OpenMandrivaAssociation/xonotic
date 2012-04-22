@@ -27,6 +27,7 @@ BuildRequires:	libode-devel
 BuildRequires:	libmodplug-devel
 BuildRequires:	libvorbis-devel
 BuildRequires:	gmp-devel
+BuildRequires:	libd0_blind-id-devel
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -59,17 +60,22 @@ Data files used to play Xonotic.
 pushd  source/darkplaces
 
 make clean
-%make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} DP_LINK_TO_LIBJPEG=1
+%make -j1 release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} DP_LINK_TO_LIBJPEG=1
+
+gcc %{cflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lm %{ldflags}
 
 popd
 
 %install
 
 %__install -d %{buildroot}%{_gamesdatadir}/%{name}
-%__cp -R data %{buildroot}%{_gamesdatadir}/%{name}/
+%__cp -R key_0.d0pk server data %{buildroot}%{_gamesdatadir}/%{name}/
 
 %__install -D -m 755 source/darkplaces/darkplaces-sdl %{buildroot}%{_gamesbindir}/%{name}-sdl
 %__install -D -m 755 source/darkplaces/darkplaces-glx %{buildroot}%{_gamesbindir}/%{name}-glx
+
+%__install -D -m 755 source/darkplaces/crypto-keygen-standalone %{buildroot}%{_gamesdatadir}/%{name}/crypto-keygen-standalone
+%__install -D -m 755 source/darkplaces/crypto-keygen-standalone-brute.sh %{buildroot}%{_gamesdatadir}/%{name}/crypto-keygen-standalone-brute.sh
 
 %__install -D -m 644 misc/logos/icons_png/%{name}_16.png %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
 %__install -D -m 644 misc/logos/icons_png/%{name}_32.png %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
@@ -107,6 +113,7 @@ EOF
 %files
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
+%{_gamesdatadir}/%{name}/crypto-keygen-standalone*
 %{_datadir}/applications/%{name}-sdl.desktop
 %{_datadir}/applications/%{name}-glx.desktop
 %{_iconsdir}/hicolor/16x16/apps/%{name}.png
@@ -117,4 +124,7 @@ EOF
 
 %files -n %{name}-data
 %dir %{_gamesdatadir}/%{name}/data
+%dir %{_gamesdatadir}/%{name}/server
 %{_gamesdatadir}/%{name}/data/*
+%{_gamesdatadir}/%{name}/server/*
+%{_gamesdatadir}/%{name}/key_0.d0pk
