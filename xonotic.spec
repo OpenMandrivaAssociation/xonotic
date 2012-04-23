@@ -62,7 +62,7 @@ pushd  source/darkplaces
 make clean
 %make -j1 release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} UNIX_X11LIBPATH=%{_libdir} DP_LINK_TO_LIBJPEG=1
 
-gcc %{cflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lgmp -lm %{ldflags}
+gcc %{optflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lgmp -lm %{ldflags}
 
 popd
 
