@@ -18,7 +18,7 @@ BuildRequires:	libxext-devel
 BuildRequires:	libxpm-devel
 BuildRequires:	libxxf86vm-devel
 %if %mdvver >= 201200
-BuildRequires:	libasound-devel
+BuildRequires:	pkgconfig(alsa)
 %else
 BuildRequires:	alsa-lib-devel
 %endif
