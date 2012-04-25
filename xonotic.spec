@@ -86,6 +86,9 @@ popd
 
 %__install -d %{buildroot}%{_datadir}/applications
 
+# (tpg) remove not needed stuff
+rm -rf %{buildroot}%{_gamesdatadir}/%{name}/server/.gitattributes
+
 %__cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-SDL
