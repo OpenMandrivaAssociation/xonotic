@@ -1,33 +1,25 @@
+%define _enable_debug_packages %{nil}
+%define debug_package %{nil}
+
 %define		oname	Xonotic
 
 Summary:	A free multi-player first person shooter
 Name:		xonotic
 Version:	0.6.0
 Release:	2
+Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
 License:	GPLv2+
 Group:		Games/Arcade
 Url:		http://www.xonotic.org/
-Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
-Patch0:		xonotic-0.6.0-makefile.inc.patch
 Requires:	%{name}-data = %{version}
-Requires:	d0_blind_id
-BuildRequires:	SDL-devel
-BuildRequires:	mesagl-devel
-BuildRequires:	libxxf86dga-devel
-BuildRequires:	libxext-devel
-BuildRequires:	libxpm-devel
-BuildRequires:	libxxf86vm-devel
-%if %mdvver >= 201200
 BuildRequires:	pkgconfig(alsa)
-%else
-BuildRequires:	alsa-lib-devel
-%endif
+BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(sdl)
+BuildRequires:	pkgconfig(xext)
+BuildRequires:	pkgconfig(xpm)
+BuildRequires:	pkgconfig(xxf86dga)
+BuildRequires:	pkgconfig(xxf86vm)
 BuildRequires:	jpeg-devel
-BuildRequires:	libode-devel
-BuildRequires:	libmodplug-devel
-BuildRequires:	libvorbis-devel
-BuildRequires:	gmp-devel
-BuildRequires:	libd0_blind_id-devel
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -52,44 +44,29 @@ Data files used to play Xonotic.
 
 %prep
 %setup -q -n %{oname}
-%patch0 -p0 -b .make
 
 %build
-%setup_compile_flags
-
-pushd  source/darkplaces
-
+cd source/darkplaces
 make clean
-%make -j1 release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name} UNIX_X11LIBPATH=%{_libdir} DP_LINK_TO_LIBJPEG=1
-
-gcc %{optflags} -o crypto-keygen-standalone crypto-keygen-standalone.c -ld0_blind_id -ld0_rijndael -lgmp -lm %{ldflags}
-
-popd
+make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
 
 %install
+install -d %{buildroot}%{_gamesdatadir}/%{name}
+cp -R data %{buildroot}%{_gamesdatadir}/%{name}/
 
-%__install -d %{buildroot}%{_gamesdatadir}/%{name}
-%__cp -R key_0.d0pk server data %{buildroot}%{_gamesdatadir}/%{name}/
+install -D -m 755 source/darkplaces/darkplaces-sdl %{buildroot}%{_gamesbindir}/%{name}-sdl
+install -D -m 755 source/darkplaces/darkplaces-glx %{buildroot}%{_gamesbindir}/%{name}-glx
 
-%__install -D -m 755 source/darkplaces/darkplaces-sdl %{buildroot}%{_gamesbindir}/%{name}-sdl
-%__install -D -m 755 source/darkplaces/darkplaces-glx %{buildroot}%{_gamesbindir}/%{name}-glx
+install -D -m 644 misc/logos/icons_png/%{name}_16.png %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
+install -D -m 644 misc/logos/icons_png/%{name}_32.png %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
+install -D -m 644 misc/logos/icons_png/%{name}_64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/%{name}.png
+install -D -m 644 misc/logos/icons_png/%{name}_128.png %{buildroot}%{_iconsdir}/hicolor/128x128/apps/%{name}.png
 
-%__install -D -m 755 source/darkplaces/crypto-keygen-standalone %{buildroot}%{_gamesdatadir}/%{name}/crypto-keygen-standalone
-%__install -D -m 755 source/darkplaces/crypto-keygen-standalone-brute.sh %{buildroot}%{_gamesdatadir}/%{name}/crypto-keygen-standalone-brute.sh
+install -D -m 644 misc/logos/%{name}_icon.svg %{buildroot}%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
 
-%__install -D -m 644 misc/logos/icons_png/%{name}_16.png %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
-%__install -D -m 644 misc/logos/icons_png/%{name}_32.png %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
-%__install -D -m 644 misc/logos/icons_png/%{name}_64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/%{name}.png
-%__install -D -m 644 misc/logos/icons_png/%{name}_128.png %{buildroot}%{_iconsdir}/hicolor/128x128/apps/%{name}.png
+install -d %{buildroot}%{_datadir}/applications
 
-%__install -D -m 644 misc/logos/%{name}_icon.svg %{buildroot}%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
-
-%__install -d %{buildroot}%{_datadir}/applications
-
-# (tpg) remove not needed stuff
-rm -rf %{buildroot}%{_gamesdatadir}/%{name}/server/.gitattributes
-
-%__cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/%{name}-sdl.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-SDL
 Comment=Multi-player first person shooter (SDL)
@@ -101,7 +78,7 @@ StartupNotify=false
 Categories=Game;ArcadeGame;
 EOF
 
-%__cat > %{buildroot}%{_datadir}/applications/%{name}-glx.desktop << EOF
+cat > %{buildroot}%{_datadir}/applications/%{name}-glx.desktop << EOF
 [Desktop Entry]
 Name=Xonotic-GLX
 Comment=Multi-player first person shooter (GLX)
@@ -116,7 +93,6 @@ EOF
 %files
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
-%{_gamesdatadir}/%{name}/crypto-keygen-standalone*
 %{_datadir}/applications/%{name}-sdl.desktop
 %{_datadir}/applications/%{name}-glx.desktop
 %{_iconsdir}/hicolor/16x16/apps/%{name}.png
@@ -127,7 +103,5 @@ EOF
 
 %files -n %{name}-data
 %dir %{_gamesdatadir}/%{name}/data
-%dir %{_gamesdatadir}/%{name}/server
 %{_gamesdatadir}/%{name}/data/*
-%{_gamesdatadir}/%{name}/server/*
-%{_gamesdatadir}/%{name}/key_0.d0pk
+
