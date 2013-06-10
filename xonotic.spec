@@ -5,12 +5,12 @@
 
 Summary:	A free multi-player first person shooter
 Name:		xonotic
-Version:	0.6.0
-Release:	3
+Version:	0.7.0
+Release:	1
+Url:		http://www.xonotic.org/
 Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
 License:	GPLv2+
 Group:		Games/Arcade
-Url:		http://www.xonotic.org/
 Requires:	%{name}-data = %{version}
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(gl)
@@ -33,13 +33,13 @@ Xonotic places focus on community involvement as its principal driving force
 and structures itself to respect that. The aim of Xonotic is to become the 
 best possible open-source FPS (first-person-shooter) of its kind.
 
-%package -n %{name}-data
+%package data
 Summary:	Xonotic data files (graphics, music, maps etc)
 Requires:	%{name} = %{version}
 Group:		Games/Arcade
 BuildArch:	noarch
 
-%description -n %{name}-data
+%description data
 Data files used to play Xonotic.
 
 %prep
@@ -101,7 +101,7 @@ EOF
 %{_iconsdir}/hicolor/128x128/apps/%{name}.png
 %{_iconsdir}/hicolor/scalable/apps/%{name}.svg
 
-%files -n %{name}-data
+%files data
 %dir %{_gamesdatadir}/%{name}/data
 %{_gamesdatadir}/%{name}/data/*
 
