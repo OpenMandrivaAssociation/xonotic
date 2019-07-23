@@ -5,8 +5,8 @@
 
 Summary:	A free multi-player first person shooter
 Name:		xonotic
-Version:	0.7.0
-Release:	3
+Version:	0.8.2
+Release:	1
 Url:		http://www.xonotic.org/
 Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
 License:	GPLv2+
@@ -14,11 +14,11 @@ Group:		Games/Arcade
 Requires:	%{name}-data = %{version}
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:	pkgconfig(sdl)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xpm)
 BuildRequires:	pkgconfig(xxf86dga)
 BuildRequires:	pkgconfig(xxf86vm)
+BuildRequires:	pkgconfig(sdl2)
 BuildRequires:	jpeg-devel
 
 %description
