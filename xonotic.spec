@@ -13,6 +13,7 @@ License:	GPLv2+
 Group:		Games/Arcade
 Requires:	%{name}-data = %{version}
 BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(xext)
 BuildRequires:	pkgconfig(xpm)
