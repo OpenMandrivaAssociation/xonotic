@@ -1,17 +1,15 @@
 %define _enable_debug_packages %{nil}
 %define debug_package %{nil}
 
-%define		oname	Xonotic
-
 Summary:	A free multi-player first person shooter
 Name:		xonotic
-Version:	0.8.2
+Version:	0.8.5
 Release:	1
 Url:		http://www.xonotic.org/
 Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
 License:	GPLv2+
 Group:		Games/Arcade
-Requires:	%{name}-data = %{version}
+Patch0:		xonotic-ldflags.patch
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(gl)
@@ -20,7 +18,8 @@ BuildRequires:	pkgconfig(xpm)
 BuildRequires:	pkgconfig(xxf86dga)
 BuildRequires:	pkgconfig(xxf86vm)
 BuildRequires:	pkgconfig(sdl2)
-BuildRequires:	jpeg-devel
+BuildRequires:	pkgconfig(libjpeg)
+Requires:	%{name}-data = %{version}
 
 %description
 Xonotic is a free (GPL), fast-paced first-person shooter that works on 
@@ -44,26 +43,27 @@ BuildArch:	noarch
 Data files used to play Xonotic.
 
 %prep
-%setup -q -n %{oname}
+%autosetup -p1 -n Xonotic
 
 %build
-cd source/darkplaces
-make clean
-make release CPUOPTIMIZATIONS="%{optflags}" DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
+%set_build_flags
+%make_build -C source/darkplaces sv-release cl-release sdl-release \
+	CPUOPTIMIZATIONS="%{optflags}" STRIP=: \
+	LDFLAGS_RELEASE="%{build_ldflags}" \
+	DP_FS_BASEDIR=%{_gamesdatadir}/%{name}
 
 %install
 install -d %{buildroot}%{_gamesdatadir}/%{name}
 cp -R data %{buildroot}%{_gamesdatadir}/%{name}/
 
-install -D -m 755 source/darkplaces/darkplaces-sdl %{buildroot}%{_gamesbindir}/%{name}-sdl
-install -D -m 755 source/darkplaces/darkplaces-glx %{buildroot}%{_gamesbindir}/%{name}-glx
+install -D -m755 source/darkplaces/darkplaces-dedicated %{buildroot}%{_gamesbindir}/%{name}-dedicated
+install -D -m755 source/darkplaces/darkplaces-sdl %{buildroot}%{_gamesbindir}/%{name}-sdl
+install -D -m755 source/darkplaces/darkplaces-glx %{buildroot}%{_gamesbindir}/%{name}-glx
 
-install -D -m 644 misc/logos/icons_png/%{name}_16.png %{buildroot}%{_iconsdir}/hicolor/16x16/apps/%{name}.png
-install -D -m 644 misc/logos/icons_png/%{name}_32.png %{buildroot}%{_iconsdir}/hicolor/32x32/apps/%{name}.png
-install -D -m 644 misc/logos/icons_png/%{name}_64.png %{buildroot}%{_iconsdir}/hicolor/64x64/apps/%{name}.png
-install -D -m 644 misc/logos/icons_png/%{name}_128.png %{buildroot}%{_iconsdir}/hicolor/128x128/apps/%{name}.png
-
-install -D -m 644 misc/logos/%{name}_icon.svg %{buildroot}%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
+for size in 16 32 64 128; do
+    install -D -m644 misc/logos/icons_png/%{name}_${size}.png %{buildroot}%{_iconsdir}/hicolor/${size}x${size}/apps/%{name}.png
+done
+install -D -m644 misc/logos/%{name}_icon.svg %{buildroot}%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
 
 install -d %{buildroot}%{_datadir}/applications
 
@@ -92,15 +92,12 @@ Categories=Game;ArcadeGame;
 EOF
 
 %files
+%{_gamesbindir}/%{name}-dedicated
 %{_gamesbindir}/%{name}-sdl
 %{_gamesbindir}/%{name}-glx
 %{_datadir}/applications/%{name}-sdl.desktop
 %{_datadir}/applications/%{name}-glx.desktop
-%{_iconsdir}/hicolor/16x16/apps/%{name}.png
-%{_iconsdir}/hicolor/32x32/apps/%{name}.png
-%{_iconsdir}/hicolor/64x64/apps/%{name}.png
-%{_iconsdir}/hicolor/128x128/apps/%{name}.png
-%{_iconsdir}/hicolor/scalable/apps/%{name}.svg
+%{_iconsdir}/hicolor/*/apps/%{name}.*
 
 %files data
 %dir %{_gamesdatadir}/%{name}/data
