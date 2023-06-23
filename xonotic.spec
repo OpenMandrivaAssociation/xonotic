@@ -3,7 +3,7 @@
 
 Summary:	A free multi-player first person shooter
 Name:		xonotic
-Version:	0.8.5
+Version:	0.8.6
 Release:	1
 Url:		http://www.xonotic.org/
 Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
