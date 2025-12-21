@@ -10,6 +10,7 @@ Source0:	http://dl.xonotic.org/%{name}-%{version}.zip
 License:	GPLv2+
 Group:		Games/Arcade
 Patch0:		xonotic-ldflags.patch
+BuildRequires:	make
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(gl)
